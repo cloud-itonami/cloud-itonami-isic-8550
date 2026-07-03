@@ -1,0 +1,11 @@
+{:itonami.blueprint/id "cloud-itonami-8550"
+ :itonami.blueprint/name "Educational support activities"
+ :itonami.blueprint/isic-rev5 "8550"
+ :itonami.blueprint/domain :education/support-activities
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:education-access :data-sovereignty :transparency]
+ :itonami.blueprint/governor :support-services-governor
+ :itonami.blueprint/required-technologies [:robotics :identity :forms :dmn :bpmn :audit-ledger]
+ :itonami.blueprint/optional-technologies []
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/robotics true}
