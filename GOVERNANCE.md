@@ -1,6 +1,6 @@
 # Governance
 
-`cloud-itonami-8550` is an OSS open-business blueprint for educational support activities -- non-instructional support for education such as educational testing, guidance counseling, and student-exchange placement services.
+`cloud-itonami-isic-8550` is an OSS open-business blueprint for educational support activities -- non-instructional support for education such as educational testing, guidance counseling, and student-exchange placement services.
 Governance covers both the capability layer and the operator model.
 
 ## Maintainers

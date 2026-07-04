@@ -1,4 +1,4 @@
-# cloud-itonami-8550
+# cloud-itonami-isic-8550
 
 Open Business Blueprint for **ISIC Rev.5 8550**: Educational support activities.
 

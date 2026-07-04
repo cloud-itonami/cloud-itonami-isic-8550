@@ -2,7 +2,7 @@
 
 ## Classification
 
-- Repository: `cloud-itonami-8550`
+- Repository: `cloud-itonami-isic-8550`
 - ISIC Rev.5: `8550`
 - Activity: educational support activities -- non-instructional support for education such as educational testing, guidance counseling, and student-exchange placement services
 - Social impact: education access, data sovereignty, transparent audit
