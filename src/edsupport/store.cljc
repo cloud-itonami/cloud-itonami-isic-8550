@@ -35,10 +35,9 @@
   institution trusting an educational-support provider needs, and the
   evidence an operator needs if a placement decision is later
   disputed."
-  (:require #?(:clj  [clojure.edn :as edn]
-               :cljs [cljs.reader :as edn])
-            [edsupport.registry :as registry]
-            [langchain.db :as d]))
+  (:require [edsupport.registry :as registry]
+            [langchain.db :as d]
+            [langchain-store.core :as ls]))
 
 (defprotocol Store
   (client [s id])
@@ -158,9 +157,6 @@
    :placement/seq                     {:db/unique :db.unique/identity}
    :sequence/jurisdiction               {:db/unique :db.unique/identity}})
 
-(defn- enc [v] (pr-str v))
-(defn- dec* [s] (when s (edn/read-string s)))
-
 (defn- client->tx [{:keys [id client-name
                           assessment-administration-irregularity-unresolved?
                           background-check-not-cleared? placement-finalized?
@@ -200,25 +196,25 @@
          (map #(pull->client (d/pull (d/db conn) client-pull [:client/id %])))
          (sort-by :id)))
   (integrity-of [_ id]
-    (dec* (d/q '[:find ?p . :in $ ?cid
+    (ls/dec* (d/q '[:find ?p . :in $ ?cid
                 :where [?k :integrity/client-id ?cid] [?k :integrity/payload ?p]]
               (d/db conn) id)))
   (background-check-of [_ id]
-    (dec* (d/q '[:find ?p . :in $ ?cid
+    (ls/dec* (d/q '[:find ?p . :in $ ?cid
                 :where [?k :background-check/client-id ?cid] [?k :background-check/payload ?p]]
               (d/db conn) id)))
   (assessment-of [_ client-id]
-    (dec* (d/q '[:find ?p . :in $ ?cid
+    (ls/dec* (d/q '[:find ?p . :in $ ?cid
                 :where [?a :assessment/client-id ?cid] [?a :assessment/payload ?p]]
               (d/db conn) client-id)))
   (ledger [_]
     (->> (d/q '[:find ?s ?f :where [?e :ledger/seq ?s] [?e :ledger/fact ?f]] (d/db conn))
          (sort-by first)
-         (mapv (comp dec* second))))
+         (mapv (comp ls/dec* second))))
   (placement-history [_]
     (->> (d/q '[:find ?s ?r :where [?e :placement/seq ?s] [?e :placement/record ?r]] (d/db conn))
          (sort-by first)
-         (mapv (comp dec* second))))
+         (mapv (comp ls/dec* second))))
   (next-sequence [_ jurisdiction]
     (or (d/q '[:find ?n . :in $ ?j
               :where [?e :sequence/jurisdiction ?j] [?e :sequence/next ?n]]
@@ -232,13 +228,13 @@
       (d/transact! conn [(client->tx value)])
 
       :assessment/set
-      (d/transact! conn [{:assessment/client-id (first path) :assessment/payload (enc payload)}])
+      (d/transact! conn [{:assessment/client-id (first path) :assessment/payload (ls/enc payload)}])
 
       :integrity/set
-      (d/transact! conn [{:integrity/client-id (first path) :integrity/payload (enc payload)}])
+      (d/transact! conn [{:integrity/client-id (first path) :integrity/payload (ls/enc payload)}])
 
       :background-check/set
-      (d/transact! conn [{:background-check/client-id (first path) :background-check/payload (enc payload)}])
+      (d/transact! conn [{:background-check/client-id (first path) :background-check/payload (ls/enc payload)}])
 
       :client/mark-finalized
       (let [client-id (first path)
@@ -248,12 +244,12 @@
         (d/transact! conn
                      [(client->tx (assoc client-patch :id client-id))
                       {:sequence/jurisdiction jurisdiction :sequence/next next-n}
-                      {:placement/seq (count (placement-history s)) :placement/record (enc (get result "record"))}])
+                      {:placement/seq (count (placement-history s)) :placement/record (ls/enc (get result "record"))}])
         result)
       nil)
     s)
   (append-ledger! [s fact]
-    (d/transact! conn [{:ledger/seq (count (ledger s)) :ledger/fact (enc fact)}])
+    (d/transact! conn [{:ledger/seq (count (ledger s)) :ledger/fact (ls/enc fact)}])
     fact)
   (with-clients [s clients]
     (when (seq clients) (d/transact! conn (mapv client->tx (vals clients)))) s))
