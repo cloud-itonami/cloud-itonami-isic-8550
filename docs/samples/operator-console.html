@@ -2507,15 +2507,15 @@ img,svg { max-width: 100%; height: auto; }</style></head><body>
   </section>
   <section class="card">
     <h2>Action gate — computed from edsupport.phase</h2>
-    <p class="muted">Each row is produced by actually calling <code>edsupport.phase/gate</code> at the default phase (<span class="num">3</span>) with a governor-clean proposal, and by reading the phase table — not transcribed from documentation. <code>:actuation/finalize-placement</code> is absent from every phase's auto set; <code>edsupport.governor/high-stakes</code> escalates it independently, so two layers agree.</p>
+    <p class="muted">Each row is produced by actually calling <code>edsupport.phase/gate</code> at the default phase (<span class="num">3</span>) with a governor-clean proposal, and by reading the phase table — not transcribed from documentation. The last column is read straight out of <code>edsupport.governor/high-stakes</code>: <code>:actuation/finalize-placement</code> is absent from every phase's auto set AND is high-stakes to the governor, so two independent layers refuse to let it commit unattended. Proposals below the governor's confidence floor of <span class="num">0.6</span> escalate regardless.</p>
     <table>
-      <thead><tr><th>Op</th><th>At phase 3, governor-clean</th><th>Phases permitting the write</th><th>Phases permitting auto-commit</th></tr></thead>
+      <thead><tr><th>Op</th><th>At phase 3, governor-clean</th><th>Phases permitting the write</th><th>Phases permitting auto-commit</th><th>Governor high-stakes</th></tr></thead>
       <tbody>
-        <tr><td><code>finalize-placement</code></td><td><span class="warn">human approval &middot; phase-approval</span></td><td class="num">3</td><td class="num"><span class="critical">never</span></td></tr>
-        <tr><td><code>verify</code></td><td><span class="warn">human approval &middot; phase-approval</span></td><td class="num">2, 3</td><td class="num"><span class="critical">never</span></td></tr>
-        <tr><td><code>screen</code></td><td><span class="warn">human approval &middot; phase-approval</span></td><td class="num">2, 3</td><td class="num"><span class="critical">never</span></td></tr>
-        <tr><td><code>intake</code></td><td><span class="ok">auto-commit when governor-clean</span></td><td class="num">1, 2, 3</td><td class="num">3</td></tr>
-        <tr><td><code>screen</code></td><td><span class="warn">human approval &middot; phase-approval</span></td><td class="num">2, 3</td><td class="num"><span class="critical">never</span></td></tr>
+        <tr><td><code>finalize-placement</code></td><td><span class="warn">human approval &middot; phase-approval</span></td><td class="num">3</td><td class="num"><span class="critical">never</span></td><td><span class="critical">yes &middot; always escalates</span></td></tr>
+        <tr><td><code>verify</code></td><td><span class="warn">human approval &middot; phase-approval</span></td><td class="num">2, 3</td><td class="num"><span class="critical">never</span></td><td><span class="muted">no</span></td></tr>
+        <tr><td><code>screen</code></td><td><span class="warn">human approval &middot; phase-approval</span></td><td class="num">2, 3</td><td class="num"><span class="critical">never</span></td><td><span class="muted">no</span></td></tr>
+        <tr><td><code>intake</code></td><td><span class="ok">auto-commit when governor-clean</span></td><td class="num">1, 2, 3</td><td class="num">3</td><td><span class="muted">no</span></td></tr>
+        <tr><td><code>screen</code></td><td><span class="warn">human approval &middot; phase-approval</span></td><td class="num">2, 3</td><td class="num"><span class="critical">never</span></td><td><span class="muted">no</span></td></tr>
       </tbody>
     </table>
   </section>

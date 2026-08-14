@@ -253,7 +253,7 @@
                              (str/join ", ")))
         writes-in (permits :writes)
         auto-in (permits :auto)]
-    (format "        <tr><td><code>%s</code></td><td>%s</td><td class=\"num\">%s</td><td class=\"num\">%s</td></tr>"
+    (format "        <tr><td><code>%s</code></td><td>%s</td><td class=\"num\">%s</td><td class=\"num\">%s</td><td>%s</td></tr>"
             (esc (kw->s op))
             (case disposition
               :commit "<span class=\"ok\">auto-commit when governor-clean</span>"
@@ -263,7 +263,12 @@
             (if (str/blank? writes-in) "&mdash;" (esc writes-in))
             (if (str/blank? auto-in)
               "<span class=\"critical\">never</span>"
-              (esc auto-in)))))
+              (esc auto-in))
+            ;; read straight out of the governor's own set -- the second,
+            ;; independent layer that refuses to let this op auto-commit.
+            (if (contains? governor/high-stakes op)
+              "<span class=\"critical\">yes &middot; always escalates</span>"
+              "<span class=\"muted\">no</span>"))))
 
 (defn- jurisdiction-row [[iso3 {:keys [name owner-authority legal-basis provenance required-evidence]}]]
   (format "        <tr><td><code>%s</code></td><td>%s</td><td>%s</td><td>%s</td><td class=\"num\">%d</td><td><a href=\"%s\">source</a></td></tr>"
@@ -400,10 +405,12 @@
      (section "Action gate — computed from edsupport.phase"
               (str "Each row is produced by actually calling <code>edsupport.phase/gate</code> at the default phase "
                    "(<span class=\"num\">" phase/default-phase "</span>) with a governor-clean proposal, and by reading the phase table — "
-                   "not transcribed from documentation. "
-                   "<code>:actuation/finalize-placement</code> is absent from every phase's auto set; "
-                   "<code>edsupport.governor/high-stakes</code> escalates it independently, so two layers agree.")
-              ["Op" "At phase 3, governor-clean" "Phases permitting the write" "Phases permitting auto-commit"]
+                   "not transcribed from documentation. The last column is read straight out of "
+                   "<code>edsupport.governor/high-stakes</code>: <code>:actuation/finalize-placement</code> is absent from "
+                   "every phase's auto set AND is high-stakes to the governor, so two independent layers refuse to let it "
+                   "commit unattended. Proposals below the governor's confidence floor of "
+                   "<span class=\"num\">" governor/confidence-floor "</span> escalate regardless.")
+              ["Op" "At phase 3, governor-clean" "Phases permitting the write" "Phases permitting auto-commit" "Governor high-stakes"]
               (map gate-row (sort phase/write-ops)))
 
      (section "Jurisdiction spec-basis catalog"
