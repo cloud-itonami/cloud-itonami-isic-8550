@@ -27,7 +27,7 @@
   educational-support provider would keep, not the act of finalizing
   the placement itself (that is `edsupport.operation`'s `:actuation/
   finalize-placement`, always human-gated -- see README `Actuation`)."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (defn- unsigned-certificate
   "Every certificate this actor produces is UNSIGNED -- signature is the
@@ -60,7 +60,7 @@
     (throw (ex-info "placement-finalization: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "placement-finalization: sequence must be >= 0" {})))
-  (let [placement-number (str (str/upper-case jurisdiction) "-PLC-" (zero-pad sequence 6))
+  (let [placement-number (str (str/upper jurisdiction) "-PLC-" (zero-pad sequence 6))
         record {"record_id" placement-number
                 "kind" "placement-finalization-draft"
                 "client_id" client-id
