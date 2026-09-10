@@ -117,7 +117,7 @@ phase, by construction.** Two independent layers enforce this
 (`edsupport.governor`'s `:actuation/finalize-placement` high-stakes
 gate and `edsupport.phase`'s phase table, which never puts
 `:actuation/finalize-placement` in any phase's `:auto` set) -- see
-`edsupport.phase`'s docstring and `test/edsupport/phase_test.clj`'s
+`edsupport.phase`'s docstring and `test/edsupport/phase_test.kotoba`'s
 `finalize-placement-never-auto-at-any-phase`. The actor may draft,
 check and recommend; a human provider staff member is always the one
 who actually finalizes a placement. Matching `leasing`'s/
@@ -208,14 +208,14 @@ the generic robotics/identity/forms/dmn/bpmn/audit-ledger stack only
 
 | File | Role |
 |---|---|
-| `src/edsupport/store.cljc` | **Store** protocol -- `MemStore` ‖ `DatomicStore` (`langchain.db`) + append-only audit ledger + placement-finalization history. No dynamically-filed sub-record -- the actuation op acts directly on a pre-seeded client, and the double-actuation guard checks a dedicated `:placement-finalized?` boolean rather than a `:status` value |
-| `src/edsupport/registry.cljc` | Placement-finalization draft records. Intentionally 'plain': this build's two distinctive checks are both boolean flags evaluated directly by the governor, not registry-level numeric/temporal predicates |
-| `src/edsupport/facts.cljc` | Per-jurisdiction educational-testing/counseling catalog with an official spec-basis citation per entry, honest coverage reporting |
-| `src/edsupport/edsupportadvisor.cljc` | **EdSupportOps-LLM** -- `mock-advisor` ‖ `llm-advisor`; intake/assessment-verification/integrity-screening/background-check-screening/placement-finalization proposals |
-| `src/edsupport/governor.cljc` | **Support Services Governor** -- 5 HARD checks (spec-basis · evidence-incomplete · assessment-administration-irregularity-unresolved, unconditional evaluation, GENUINELY NEW, the 49th grounding of this discipline · background-check-not-cleared, unconditional evaluation, the FOURTH literal instance of `school`'s/`sports`'s/`personalservice`'s concept, the 50th grounding overall, not claimed as new · already-finalized guard) + 1 soft (confidence/actuation gate) |
-| `src/edsupport/phase.cljc` | **Phase 0→3** -- read-only → assisted intake → assisted verify → supervised (placement finalization always human; client intake is the ONLY auto-eligible op, no direct capital risk) |
-| `src/edsupport/operation.cljc` | **OperationActor** -- langgraph-clj StateGraph |
-| `src/edsupport/sim.cljc` | demo driver |
+| `src/edsupport/store.kotoba` | **Store** protocol -- `MemStore` ‖ `DatomicStore` (`langchain.db`) + append-only audit ledger + placement-finalization history. No dynamically-filed sub-record -- the actuation op acts directly on a pre-seeded client, and the double-actuation guard checks a dedicated `:placement-finalized?` boolean rather than a `:status` value |
+| `src/edsupport/registry.kotoba` | Placement-finalization draft records. Intentionally 'plain': this build's two distinctive checks are both boolean flags evaluated directly by the governor, not registry-level numeric/temporal predicates |
+| `src/edsupport/facts.kotoba` | Per-jurisdiction educational-testing/counseling catalog with an official spec-basis citation per entry, honest coverage reporting |
+| `src/edsupport/edsupportadvisor.kotoba` | **EdSupportOps-LLM** -- `mock-advisor` ‖ `llm-advisor`; intake/assessment-verification/integrity-screening/background-check-screening/placement-finalization proposals |
+| `src/edsupport/governor.kotoba` | **Support Services Governor** -- 5 HARD checks (spec-basis · evidence-incomplete · assessment-administration-irregularity-unresolved, unconditional evaluation, GENUINELY NEW, the 49th grounding of this discipline · background-check-not-cleared, unconditional evaluation, the FOURTH literal instance of `school`'s/`sports`'s/`personalservice`'s concept, the 50th grounding overall, not claimed as new · already-finalized guard) + 1 soft (confidence/actuation gate) |
+| `src/edsupport/phase.kotoba` | **Phase 0→3** -- read-only → assisted intake → assisted verify → supervised (placement finalization always human; client intake is the ONLY auto-eligible op, no direct capital risk) |
+| `src/edsupport/operation.kotoba` | **OperationActor** -- langgraph-clj StateGraph |
+| `src/edsupport/sim.kotoba` | demo driver |
 | `test/edsupport/*_test.clj` | governor contract · phase invariants · store parity · registry conformance · facts coverage |
 
 ## Business-process coverage (honest)
