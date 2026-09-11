@@ -1,5 +1,5 @@
 (ns edsupport.sim
-  "Demo driver -- `clojure -M:dev:run`. Walks a clean client through
+  "Demo driver -- `kbb -M:dev:run`. Walks a clean client through
   intake -> assessment verification -> assessment-integrity screening
   -> background-check screening -> placement-finalization proposal
   (always escalates) -> human approval -> commit, then shows four HARD
