@@ -1,0 +1,33 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README "Robotics premise": a document-courier robot handles physical record
+;; handoff for educational support services (ISIC 8550: testing, admissions,
+;; educational consulting). Its physical work: carrying sealed exam-paper and
+;; transcript boxes across a campus, and lifting them onto the secure-room
+;; shelving.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-8550"
+ :cases
+ [{:id :exam-paper-campus-run
+   :kind :transport
+   :procedure "courier robot carries a sealed box of exam papers from the print room to the examination hall across campus"
+   :params {:mass-kg 45.0 :payload-kg 15.0 :v-max-mps 1.4 :a-max-mps2 0.5
+            :brake-decel-mps2 0.8 :drive-force-n 150.0 :crr 0.025
+            :cog-height-m 0.55 :support-half-length-m 0.25 :max-time-s 5000.0}
+   :sweep {:param :distance-m :values [100.0 200.0 400.0 600.0 800.0]}
+   :quantity :cycle-time-s
+   :limit {:max 600.0 :basis "estimate: papers delivered within the 10-minute window before the hall opens"}
+   :boundary {:lo 50.0 :hi 2000.0}}
+  {:id :transcript-box-to-shelf
+   :kind :manipulator
+   :procedure "arm lifts a transcript archive box from the courier onto the secure-room shelf"
+   :params {:l1-m 0.45 :l2-m 0.40 :m1-kg 3.5 :m2-kg 2.5
+            :from [0.55 0.05] :to [0.20 0.70] :duration-s 2.5 :steps 500}
+   :sweep {:param :payload-kg :values [2.0 4.0 6.0 8.0 10.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 60.0 :basis "estimate: continuous shoulder torque of a light (~5 kg class) collaborative arm"}
+   :boundary {:lo 0.5 :hi 25.0}}]}
